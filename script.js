@@ -344,8 +344,8 @@ function shareToInstagram(item) {
         }).catch(async (error) => {
             // User cancelled or share failed, fallback to copy method
             console.log('Share failed, using copy method:', error);
-            await copyToClipboard(textToCopy, imageURL);
-            alert("Link copied to clipboard!");
+            // await copyToClipboard(textToCopy, imageURL);
+            // alert("Link copied to clipboard!");
             // Open Instagram
             // setTimeout(() => {
             //     window.location.href = "https://www.instagram.com/";
