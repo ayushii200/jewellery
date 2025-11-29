@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Jewellery Collection</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <h1><i class="fas fa-cog"></i> Admin Panel</h1>
+            <nav>
+                <a href="index.html">Gallery</a>
+                <a href="admin.html" class="active">Admin</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <section class="admin-section">
+            <h2>Manage Jewellery Inventory</h2>
+            <p class="admin-description">Add, edit, or remove jewellery items from your collection.</p>
+
+            <!-- Add New Item Form -->
+            <div class="admin-card">
+                <h3><i class="fas fa-plus-circle"></i> Add New Item</h3>
+                <form id="addItemForm">
+                    <div class="form-group">
+                        <label for="itemName">Item Name *</label>
+                        <input type="text" id="itemName" required placeholder="e.g., Golden Elegance Necklace">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="itemDescription">Description *</label>
+                        <textarea id="itemDescription" required rows="3" placeholder="Describe your jewellery item..."></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="itemPrice">Price *</label>
+                            <input type="text" id="itemPrice" required placeholder="e.g., $299">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="itemCategory">Category *</label>
+                            <select id="itemCategory" required>
+                                <option value="">Select Category</option>
+                                <option value="necklace">Necklace</option>
+                                <option value="earring">Earring</option>
+                                <option value="bracelet">Bracelet</option>
+                                <option value="ring">Ring</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="itemImage">Image Icon/Emoji *</label>
+                        <input type="file" id="itemImage" accept="image/*" required>
+<small>Upload product image (JPG, PNG, JPEG)</small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Item
+                    </button>
+                </form>
+            </div>
+
+            <!-- Data Management
+            <div class="admin-card">
+                <h3><i class="fas fa-database"></i> Data Management</h3>
+                <p style="margin-bottom: 1rem; color: #666;">
+                    Export your data (inventory and likes) to transfer to another device, or import data from another device.
+                </p>
+                <div class="data-actions">
+                    <button class="btn btn-primary" onclick="exportData()">
+                        <i class="fas fa-download"></i> Export Data
+                    </button>
+                    <label for="importFile" class="btn btn-primary" style="cursor: pointer; margin-left: 10px;">
+                        <i class="fas fa-upload"></i> Import Data
+                        <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+                    </label>
+                    <button class="btn btn-danger" onclick="clearAllData()" style="margin-left: 10px;">
+                        <i class="fas fa-trash-alt"></i> Clear All Data
+                    </button>
+                </div>
+            </div> -->
+
+            <!-- Current Inventory -->
+            <div class="admin-card">
+                <h3><i class="fas fa-list"></i> Current Inventory</h3>
+                <div id="inventoryList" class="inventory-list">
+                    <!-- Items will be loaded here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Jewellery Collection</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
+
