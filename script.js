@@ -319,12 +319,15 @@ function shareToInstagram(item) {
     if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         const instagramUrl = "https://www.instagram.com/";
         
-        // On mobile, navigate to Instagram (most reliable method)
-        // Mobile browsers will prompt to open in app if installed
-        window.location.href = instagramUrl;
+        // Show alert with instructions first
+        alert("Caption + image link copied to clipboard!\n\nNext steps:\n1. Instagram will open (app or website)\n2. Create a new post\n3. Paste the copied text\n\n✓ Works with or without Instagram app installed!");
         
-        // Show alert with instructions (before navigation)
-        alert("Caption + image link copied to clipboard!\n\nAfter Instagram opens:\n1. Create a new post\n2. Paste the copied text");
+        // On mobile, navigate to Instagram
+        // If app is installed, browser will prompt to open in app
+        // If not installed, it will open Instagram website in browser
+        setTimeout(() => {
+            window.location.href = instagramUrl;
+        }, 100);
     } else {
         // Desktop
         alert("Caption + image link copied!\nOpen Instagram and paste it.");
