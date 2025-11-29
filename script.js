@@ -360,15 +360,14 @@ function shareToInstagram(item) {
                 const instagramUrl = "https://www.instagram.com/";
                 
                 // Show alert with instructions
-                alert("Link copied to clipboard!\n\n✅ Works in: WhatsApp, Messages, Email, Instagram DMs/Stories\n\n⚠️ Note: Instagram post captions don't support clickable links.\n\nNext steps:\n1. Instagram will open\n2. Try Stories, DMs, or paste in other apps");
-                
+                alert("Link copied to clipboard!");
                 // On mobile, navigate to Instagram
-                setTimeout(() => {
-                    window.location.href = instagramUrl;
-                }, 100);
+                // setTimeout(() => {
+                //     window.location.href = instagramUrl;
+                // }, 100);
             } else {
                 // Desktop
-                alert("Link copied to clipboard!\nOpen Instagram and paste it.");
+                alert("Link copied to clipboard!");
                 window.open("https://www.instagram.com/", "_blank");
             }
         });
