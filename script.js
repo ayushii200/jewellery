@@ -309,11 +309,20 @@ function shareToInstagram(item) {
     const caption = `Check out this beautiful ${item.name} — ${item.price}\n\n${item.description}`;
 
     // Build correct public image URL for GitHub Pages
-    const base = window.location.origin + window.location.pathname.replace("index.html", "");
-    const imageURL = base + item.image;
+    let base = window.location.origin + window.location.pathname.replace("index.html", "");
+    // Remove trailing slash from base
+    base = base.replace(/\/$/, '');
+    // Ensure image path starts with / if it doesn't already
+    const imagePath = item.image.startsWith('/') ? item.image : '/' + item.image;
+    // Build full URL (window.location.origin already includes http:// or https://)
+    const imageURL = base + imagePath;
+
+    // Format text with URL on its own line to ensure it's recognized as clickable
+    // Most apps (Instagram, WhatsApp, etc.) auto-detect URLs that start with http:// or https://
+    const textToCopy = `${caption}\n\n${imageURL}`;
 
     // Copy caption + image URL
-    copyToClipboard(caption + "\n\n" + imageURL);
+    copyToClipboard(textToCopy);
 
     // Mobile devices
     if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
