@@ -14,86 +14,69 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Load jewelry data from localStorage or use default data
 function loadJewelryData() {
+    // Default sample data with placeholder icons
+    const defaultData = [
+        {
+            id: 1,
+            name: "Golden Elegance Necklace",
+            description: "A stunning golden necklace with intricate details, perfect for special occasions.",
+            price: "$299",
+            category: "necklace",
+            image: "images/necklace.webp",
+            likes: 0
+        },
+        {
+            id: 2,
+            name: "Diamond Stud Earrings",
+            description: "Classic diamond stud earrings that add elegance to any outfit.",
+            price: "$199",
+            category: "earring",
+            image: "images/earrings.webp",
+            likes: 0
+        },
+        {
+            id: 3,
+            name: "Rose Gold Ring",
+            description: "Elegant rose gold ring with a delicate design, perfect for everyday wear.",
+            price: "$89",
+            category: "ring",
+            image: "images/ring.jpeg",
+            likes: 0
+        },        
+        {
+            id: 4,
+            name: "Pearl Drop Necklace",
+            description: "Timeless pearl drop necklace that never goes out of style.",
+            price: "$249",
+            category: "necklace",
+            image: "images/pearlNecklace.webp",
+            likes: 0
+        }
+
+    ];
+    
     const savedData = localStorage.getItem('jewelryInventory');
     
     if (savedData) {
         jewelryData = JSON.parse(savedData);
-    } else {
-        // Default sample data with placeholder icons
-        jewelryData = [
-            {
-                id: 1,
-                name: "Golden Elegance Necklace",
-                description: "A stunning golden necklace with intricate details, perfect for special occasions.",
-                price: "$299",
-                category: "necklace",
-                image: "images/ring.jpeg",
-                likes: 0
-            },
-            {
-                id: 2,
-                name: "Diamond Stud Earrings",
-                description: "Classic diamond stud earrings that add elegance to any outfit.",
-                price: "$199",
-                category: "earring",
-                image: "images/ring.jpeg",
-                likes: 0
-            },
-            {
-                id: 3,
-                name: "Silver Charm Bracelet",
-                description: "Beautiful silver bracelet with multiple charms, customizable design.",
-                price: "$149",
-                category: "bracelet",
-                image: "images/ring.jpeg",
-                likes: 0
-            },
-            {
-                id: 4,
-                name: "Rose Gold Ring",
-                description: "Elegant rose gold ring with a delicate design, perfect for everyday wear.",
-                price: "$89",
-                category: "ring",
-                image: "images/ring.jpeg",
-                likes: 0
-            },
-            {
-                id: 5,
-                name: "Pearl Drop Necklace",
-                description: "Timeless pearl drop necklace that never goes out of style.",
-                price: "$249",
-                category: "necklace",
-                image: "images/ring.jpeg",
-                likes: 0
-            },
-            {
-                id: 6,
-                name: "Hoop Earrings Set",
-                description: "Set of three different sized hoop earrings in gold and silver.",
-                price: "$79",
-                category: "earring",
-                image: "images/ring.jpeg",
-                likes: 0
-            },
-            {
-                id: 7,
-                name: "Tennis Bracelet",
-                description: "Sparkling tennis bracelet with multiple diamonds, a true classic.",
-                price: "$399",
-                category: "bracelet",
-                image: "images/ring.jpeg",
-                likes: 0
-            },
-            {
-                id: 8,
-                name: "Vintage Ring Collection",
-                description: "Collection of vintage-inspired rings with unique designs.",
-                price: "$129",
-                category: "ring",
-                image: "images/ring.jpeg",
-                likes: 0
+        
+        // Update existing items with default data if they match by ID
+        // This ensures changes to default data are reflected
+        defaultData.forEach(defaultItem => {
+            const existingIndex = jewelryData.findIndex(item => item.id === defaultItem.id);
+            if (existingIndex !== -1) {
+                // Update existing item with default data, but preserve likes
+                jewelryData[existingIndex] = {
+                    ...defaultItem,
+                    likes: jewelryData[existingIndex].likes || 0
+                };
             }
-        ];
+        });
+        
+        // Save updated data
+        saveJewelryData();
+    } else {
+        jewelryData = defaultData;
         saveJewelryData();
     }
 }
@@ -269,7 +252,7 @@ function openModal(item) {
     // };
 
     document.getElementById("shareInstagramBtn").onclick = function () {
-        shareToInstagram(currentItem);
+        shareToInstagram(item);
     };
     
 
@@ -334,14 +317,14 @@ function shareToInstagram(item) {
 
     // Mobile devices
     if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-
-        // Try opening Instagram app
-        window.location.href = "instagram://app";
-
-        // Fallback
-        setTimeout(() => {
-            alert("Caption + image link copied!\nOpen Instagram and paste it.");
-        }, 700);
+        const instagramUrl = "https://www.instagram.com/";
+        
+        // On mobile, navigate to Instagram (most reliable method)
+        // Mobile browsers will prompt to open in app if installed
+        window.location.href = instagramUrl;
+        
+        // Show alert with instructions (before navigation)
+        alert("Caption + image link copied to clipboard!\n\nAfter Instagram opens:\n1. Create a new post\n2. Paste the copied text");
     } else {
         // Desktop
         alert("Caption + image link copied!\nOpen Instagram and paste it.");
