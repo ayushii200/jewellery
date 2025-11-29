@@ -345,12 +345,11 @@ function shareToInstagram(item) {
             // User cancelled or share failed, fallback to copy method
             console.log('Share failed, using copy method:', error);
             await copyToClipboard(textToCopy, imageURL);
-            alert("Link copied to clipboard!\n\n📱 Works in: WhatsApp, Messages, Email, etc.\n\n⚠️ Note: Instagram post captions don't support clickable links.\n\nTry pasting in Instagram Stories, DMs, or other apps!");
-            
+            alert("Link copied to clipboard!");
             // Open Instagram
-            setTimeout(() => {
-                window.location.href = "https://www.instagram.com/";
-            }, 100);
+            // setTimeout(() => {
+            //     window.location.href = "https://www.instagram.com/";
+            // }, 100);
         });
     } else {
         // Fallback: Copy to clipboard for desktop or browsers without Web Share API
