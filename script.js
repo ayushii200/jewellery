@@ -315,50 +315,115 @@ function shareToInstagram(item) {
     // Ensure image path starts with / if it doesn't already
     const imagePath = item.image.startsWith('/') ? item.image : '/' + item.image;
     // Build full URL (window.location.origin already includes http:// or https://)
-    const imageURL = base + imagePath;
+    let imageURL = base + imagePath;
+    
+    // Ensure URL is properly formatted (no spaces, proper protocol, clean format)
+    imageURL = imageURL.trim();
+    // Remove any double slashes (except after http:// or https://)
+    imageURL = imageURL.replace(/([^:]\/)\/+/g, '$1');
+    // Ensure it starts with http:// or https://
+    if (!imageURL.startsWith('http://') && !imageURL.startsWith('https://')) {
+        imageURL = 'https://' + imageURL.replace(/^\/+/, '');
+    }
+    // Remove trailing slash for cleaner URL
+    imageURL = imageURL.replace(/\/$/, '');
+    
+    // Format text with URL on its own line with blank lines for maximum detection
+    // Put URL on its own line with spacing - this helps apps auto-detect it as clickable
+    const textToCopy = `${caption}\n\n${imageURL}\n`;
 
-    // Format text with URL on its own line to ensure it's recognized as clickable
-    // Most apps (Instagram, WhatsApp, etc.) auto-detect URLs that start with http:// or https://
-    const textToCopy = `${caption}\n\n${imageURL}`;
-
-    // Copy caption + image URL
-    copyToClipboard(textToCopy);
-
-    // Mobile devices
-    if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-        const instagramUrl = "https://www.instagram.com/";
-        
-        // Show alert with instructions first
-        alert("Caption + image link copied to clipboard!\n\nNext steps:\n1. Instagram will open (app or website)\n2. Create a new post\n3. Paste the copied text\n\n✓ Works with or without Instagram app installed!");
-        
-        // On mobile, navigate to Instagram
-        // If app is installed, browser will prompt to open in app
-        // If not installed, it will open Instagram website in browser
-        setTimeout(() => {
-            window.location.href = instagramUrl;
-        }, 100);
+    // Try Web Share API first (best for mobile - creates clickable links)
+    if (navigator.share && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        navigator.share({
+            title: item.name,
+            text: caption,
+            url: imageURL
+        }).then(() => {
+            // Share was successful
+            console.log('Shared successfully');
+        }).catch(async (error) => {
+            // User cancelled or share failed, fallback to copy method
+            console.log('Share failed, using copy method:', error);
+            await copyToClipboard(textToCopy, imageURL);
+            alert("Link copied to clipboard!\n\n📱 Works in: WhatsApp, Messages, Email, etc.\n\n⚠️ Note: Instagram post captions don't support clickable links.\n\nTry pasting in Instagram Stories, DMs, or other apps!");
+            
+            // Open Instagram
+            setTimeout(() => {
+                window.location.href = "https://www.instagram.com/";
+            }, 100);
+        });
     } else {
-        // Desktop
-        alert("Caption + image link copied!\nOpen Instagram and paste it.");
-        window.open("https://www.instagram.com/", "_blank");
+        // Fallback: Copy to clipboard for desktop or browsers without Web Share API
+        copyToClipboard(textToCopy, imageURL).then(() => {
+            // Mobile devices
+            if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                const instagramUrl = "https://www.instagram.com/";
+                
+                // Show alert with instructions
+                alert("Link copied to clipboard!\n\n✅ Works in: WhatsApp, Messages, Email, Instagram DMs/Stories\n\n⚠️ Note: Instagram post captions don't support clickable links.\n\nNext steps:\n1. Instagram will open\n2. Try Stories, DMs, or paste in other apps");
+                
+                // On mobile, navigate to Instagram
+                setTimeout(() => {
+                    window.location.href = instagramUrl;
+                }, 100);
+            } else {
+                // Desktop
+                alert("Link copied to clipboard!\nOpen Instagram and paste it.");
+                window.open("https://www.instagram.com/", "_blank");
+            }
+        });
     }
 }
 
-// Copy text to clipboard
-function copyToClipboard(text) {
+// Copy text to clipboard with HTML format for clickable links
+async function copyToClipboard(text, url = null) {
+    // Try to copy with HTML format (makes links clickable in supported apps)
+    if (navigator.clipboard && navigator.clipboard.write && url) {
+        try {
+            // Create HTML version with clickable link
+            const htmlText = `<p>${text.replace(url, `<a href="${url}">${url}</a>`)}</p>`;
+            
+            const htmlBlob = new Blob([htmlText], { type: 'text/html' });
+            const textBlob = new Blob([text], { type: 'text/plain' });
+            const clipboardItem = new ClipboardItem({
+                'text/html': htmlBlob,
+                'text/plain': textBlob
+            });
+            
+            await navigator.clipboard.write([clipboardItem]);
+            console.log('Copied with HTML format, URL:', url);
+            return;
+        } catch (error) {
+            console.log('HTML copy failed, using plain text:', error);
+            // Fall through to plain text copy
+        }
+    }
+    
+    // Fallback to plain text copy
     if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text);
+        try {
+            await navigator.clipboard.writeText(text);
+            console.log('Copied as plain text, URL:', url);
+        } catch (error) {
+            console.log('Clipboard API failed, using fallback:', error);
+            fallbackCopy(text);
+        }
     } else {
         // Fallback for older browsers
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        textArea.style.position = 'fixed';
-        textArea.style.opacity = '0';
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
+        fallbackCopy(text);
     }
+}
+
+// Fallback copy method for older browsers
+function fallbackCopy(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.opacity = '0';
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
 }
 
 // Export function to refresh gallery (used by admin panel)
