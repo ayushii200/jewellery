@@ -359,7 +359,7 @@ function shareToInstagram(item) {
                 const instagramUrl = "https://www.instagram.com/";
                 
                 // Show alert with instructions
-                alert("Link copied to clipboard!");
+                // alert("Link copied to clipboard!");
                 // On mobile, navigate to Instagram
                 // setTimeout(() => {
                 //     window.location.href = instagramUrl;
