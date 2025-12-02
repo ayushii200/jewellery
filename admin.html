@@ -1,5 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
+<script>
+async function sha256(message) {
+  const msgUint8 = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+(async function() {
+  const correctHash = "e86f78a8a3caf0b60d8e74e5942aa6d86dc150cd3c03338aef25b7d2d7e3acc7";
+  const maxAttempts = 3;
+  let attempts = 0;
+  
+  while (attempts < maxAttempts) {
+    let pwd = prompt("To access admin, please type the password:");
+    
+    // If user clicks Cancel or closes the prompt
+    if (pwd === null) {
+      alert("Access denied. You must enter a password to access the admin panel.");
+      window.location.href = "index.html";
+      return;
+    }
+    
+    // If user clicks OK with empty input
+    if (pwd.trim() === "") {
+      alert("Password cannot be empty. Please enter a password.");
+      continue;
+    }
+    
+    // Check password hash
+    const typedHash = await sha256(pwd);
+    if (typedHash === correctHash) {
+      // Password correct → page continues normally
+      return;
+    }
+    
+    // Wrong password
+    attempts++;
+    if (attempts < maxAttempts) {
+      alert("Wrong password. Please try again.");
+    } else {
+      alert("Wrong password. Maximum attempts reached. Access denied.");
+      window.location.href = "index.html";
+      return;
+    }
+  }
+})();
+</script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
